@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Questionnaire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            background: url('https://unicsoft.com/wp-content/uploads/2023/07/Cover_1140-2.png') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .questionnaire-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="questionnaire-container">
+        <h1>Health Questionnaire</h1>
+        <form id="health-form" onsubmit="submitHealthData(event)">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="weight">Weight:</label>
+            <input type="number" id="weight" name="weight" required>
+
+            <label for="height">Height:</label>
+            <input type="number" id="height" name="height" required>
+
+            <label for="issues">What health issue do you have?</label>
+            <textarea id="issues" name="issues" rows="4" required></textarea>
+            
+             <a href="index-3.html" type="submit">Submit</a>
+        </form>
+    </div>
+
+    <script>
+        async function submitHealthData(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value,
+                weight: document.getElementById('weight').value,
+                height: document.getElementById('height').value,
+                issues: document.getElementById('issues').value
+            };
+
+            const response = await fetch('http://127.0.0.1:5000/submit_health_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            console.log(result);
+            alert("Health data submitted successfully.");
+        }
+    </script>
+</body>
+</html>

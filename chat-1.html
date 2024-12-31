@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://www.moh.gov.sg/images/librariesprovider5/default-album/bg_image_ai.jpg?sfvrsn=5bf6691c_2') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .chat-header {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ccc;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-radius: 0 0 10px 10px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Medical Chat</h2>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (!userInput.trim()) return;
+
+            // Display user message
+            const messagesContainer = document.getElementById('chat-messages');
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.textContent = `User: ${userInput}`;
+            messagesContainer.appendChild(userMessageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Send user message to the backend
+            const response = await fetch('http://127.0.0.1:5000/get_suggestions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ symptoms: userInput })
+            });
+
+            const data = await response.json();
+            const aiMessageDiv = document.createElement('div');
+            aiMessageDiv.textContent = `AI: ${data.suggestions}`;
+            messagesContainer.appendChild(aiMessageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Clear input
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
